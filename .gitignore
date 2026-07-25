@@ -1,0 +1,8 @@
+# Scan output
+*.csv
+
+# Editor / OS noise
+.vscode/
+Thumbs.db
+desktop.ini
+*.swp

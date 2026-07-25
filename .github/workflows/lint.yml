@@ -1,0 +1,30 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  script-analyzer:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+
+      - name: Analyze
+        shell: pwsh
+        run: |
+          # Write-Host is deliberate: console mode prints coloured status for a human,
+          # not objects for a pipeline.
+          $issues = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning, Error `
+            -ExcludeRule PSAvoidUsingWriteHost
+          if ($issues) {
+            $issues | Format-Table RuleName, Severity, Line, Message -AutoSize -Wrap
+            throw "$($issues.Count) PSScriptAnalyzer issue(s)."
+          }
+          Write-Output 'Clean.'
