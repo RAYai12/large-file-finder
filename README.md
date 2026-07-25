@@ -1,5 +1,7 @@
 # Large File Finder
 
+[![lint](https://github.com/RAYai12/large-file-finder/actions/workflows/lint.yml/badge.svg)](https://github.com/RAYai12/large-file-finder/actions/workflows/lint.yml)
+
 Find the biggest files on your PC. One PowerShell script — no install, no dependencies,
 nothing to trust but the source you're reading.
 
