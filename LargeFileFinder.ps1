@@ -88,7 +88,9 @@ function Invoke-FileScan {
         if ($ShouldCancel -and (& $ShouldCancel)) { break }
 
         $dir = $stack.Pop()
-        if ($Skip -and $Skip.Contains($dir.TrimEnd('\'))) { continue }
+        # The skip list never applies to the root: picking C:\Windows as the folder
+        # to scan should scan it, not silently return nothing.
+        if ($Skip -and $dir -ne $Root -and $Skip.Contains($dir.TrimEnd('\'))) { continue }
 
         try {
             $di = [System.IO.DirectoryInfo]::new($dir)

@@ -5,7 +5,7 @@
 Find the biggest files on your PC. One PowerShell script — no install, no dependencies,
 nothing to trust but the source you're reading.
 
-![Large File Finder scanning C:\Program Files](docs/screenshot.png)
+![Large File Finder scanning the Windows component store](docs/screenshot.png)
 
 ## Run it
 
