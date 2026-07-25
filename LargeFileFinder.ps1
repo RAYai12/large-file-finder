@@ -127,7 +127,7 @@ function Invoke-FileScan {
 
 # ---------------------------------------------------------- console mode ----
 
-function Start-ConsoleScan {
+function Invoke-ConsoleScan {
     param([string]$Root, [double]$MinMB, [int]$Top, [string]$Csv, [switch]$IncludeWindows)
 
     if (-not $Root) { $Root = (Get-Location).Path }
@@ -196,7 +196,7 @@ function Hide-ConsoleWindow {
     handlers do not run inside this function's scope, so a plain local like
     $status is invisible to them and "$status.Text = ..." throws at click time.
 #>
-function Start-Gui {
+function Show-Gui {
     param([string]$Root, [double]$MinMB, [int]$Top)
 
     Add-Type -AssemblyName System.Windows.Forms
@@ -396,10 +396,12 @@ function Start-Gui {
     })
 
     $script:List.Add_ColumnClick({
-        param($sender, $e)
+        # $args = (sender, ColumnClickEventArgs). Not declared as a param block:
+        # naming the first one $sender would shadow PowerShell's automatic variable.
         try {
-            if ($script:SortCol -eq $e.Column) { $script:SortAsc = -not $script:SortAsc }
-            else { $script:SortCol = $e.Column; $script:SortAsc = ($e.Column -ne 1) }
+            $column = $args[1].Column
+            if ($script:SortCol -eq $column) { $script:SortAsc = -not $script:SortAsc }
+            else { $script:SortCol = $column; $script:SortAsc = ($column -ne 1) }
             & $script:Render
         }
         catch { $script:Status.Text = "Sort failed: $($_.Exception.Message)" }
@@ -489,10 +491,10 @@ function Start-Gui {
 # ------------------------------------------------------------------ main ----
 
 if ($Console) {
-    Start-ConsoleScan -Root $Path -MinMB $MinMB -Top $Top -Csv $Csv -IncludeWindows:$IncludeWindows
+    Invoke-ConsoleScan -Root $Path -MinMB $MinMB -Top $Top -Csv $Csv -IncludeWindows:$IncludeWindows
 }
 else {
     if (-not $Path) { $Path = $env:USERPROFILE }
     if ($HideConsole) { Hide-ConsoleWindow }
-    Start-Gui -Root $Path -MinMB $MinMB -Top $Top
+    Show-Gui -Root $Path -MinMB $MinMB -Top $Top
 }
